@@ -83,23 +83,23 @@ def integral(img_original):
 	
 	for l_index, linha in enumerate(img_integral):
 		for c_index, coluna in enumerate(linha):
-				if (((l_index + math.floor(JANELA/2)) > (len(img) - math.floor(JANELA/2) - 1)) and ((c_index + math.floor(JANELA/2)) > (len(linha) - math.floor(JANELA/2) - 1))):
+				if (((l_index + math.floor(JANELA/2)) > (len(img) - 1)) and ((c_index + math.floor(JANELA/2)) > (len(linha) - 1))):
 					soma = img_integral[len(img) - 1][len(linha) - 1]
-				elif ((l_index + math.floor(JANELA/2)) > (len(img) - math.floor(JANELA/2) - 1)):
+				elif ((l_index + math.floor(JANELA/2)) > (len(img) - 1)):
 					soma = img_integral[len(img) - 1][c_index + math.floor(JANELA/2)]
-				elif ((c_index + math.floor(JANELA/2)) > (len(linha) - math.floor(JANELA/2) - 1)):
+				elif ((c_index + math.floor(JANELA/2)) > (len(linha) - 1)):
 					soma = img_integral[l_index + math.floor(JANELA/2)][len(linha) - 1]
 				else:
 					soma = img_integral[l_index + math.floor(JANELA/2)][c_index + math.floor(JANELA/2)]
 				flag = 0
 				if c_index - math.floor(JANELA/2) > 0:
-					if ((l_index + math.floor(JANELA/2)) > (len(img) - math.floor(JANELA/2) - 1)):
+					if ((l_index + math.floor(JANELA/2)) > (len(img) - 1)):
 						soma = soma - img_integral[len(img) - 1][c_index - math.floor(JANELA/2) - 1]
 					else:
 						soma = soma - img_integral[l_index + math.floor(JANELA/2)][c_index - math.floor(JANELA/2) - 1]
 					flag = flag + 1
 				if l_index - math.floor(JANELA/2) > 0:
-					if ((c_index + math.floor(JANELA/2)) > (len(linha) - math.floor(JANELA/2) - 1)):
+					if ((c_index + math.floor(JANELA/2)) > (len(linha) - 1)):
 						soma = soma - img_integral[l_index - math.floor(JANELA/2) - 1][len(linha) - 1]
 					else:
 						soma = soma - img_integral[l_index - math.floor(JANELA/2) - 1][c_index + math.floor(JANELA/2)]
