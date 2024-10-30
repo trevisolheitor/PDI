@@ -116,7 +116,8 @@ def algoritmo_RGB(func, img_original):
 	img = img_original.copy()
 	for i in range(0, 3):
 		img[:, :, i] =  func(img_original[:, :, i])
-	return img[math.floor(JANELA/2):-math.floor(JANELA/2), math.floor(JANELA/2):-math.floor(JANELA/2), :]
+	img = (img*255).astype(np.uint8)
+	return img, img[math.floor(JANELA/2):-math.floor(JANELA/2), math.floor(JANELA/2):-math.floor(JANELA/2), :]
 
 def verifica_igual(img1, img2):
 	flag = False
@@ -148,27 +149,33 @@ def main ():
 	img = img.astype (np.float32) / 255
 
 	blur = cv2.blur(img,(JANELA,JANELA))
-	blur = blur[math.floor(JANELA/2):-math.floor(JANELA/2), math.floor(JANELA/2):-math.floor(JANELA/2), :]
+	blur_sem_margem = blur[math.floor(JANELA/2):-math.floor(JANELA/2), math.floor(JANELA/2):-math.floor(JANELA/2), :]
 	blur = (blur*255).astype(np.uint8)
+	blur_sem_margem = (blur_sem_margem*255).astype(np.uint8)
 	cv2.imwrite ('04 - blur.png', blur)
+	cv2.imwrite ('14 - blur_sem_margem.png', blur_sem_margem)
 
-	img_ingenuo = (algoritmo_RGB(ingenuo, img)*255).astype(np.uint8)
-	img_separavel = (algoritmo_RGB(separavel, img)*255).astype(np.uint8)
-	img_integral = (algoritmo_RGB(integral, img)*255).astype(np.uint8)
+	img_ingenuo, img_ingenuo_sem_margem = algoritmo_RGB(ingenuo, img)
+	img_separavel, img_separavel_sem_margem = algoritmo_RGB(separavel, img)
+	img_integral, img_integral_sem_margem = algoritmo_RGB(integral, img)
     
 	cv2.imwrite ('01 - ingenuo.png', img_ingenuo)
 	cv2.imwrite ('02 - separavel.png', img_separavel)
 	cv2.imwrite ('03 - integral.png', img_integral)
+
+	cv2.imwrite ('11 - img_ingenuo_sem_margem.png', img_ingenuo_sem_margem)
+	cv2.imwrite ('12 - img_separavel_sem_margem.png', img_separavel_sem_margem)
+	cv2.imwrite ('13 - img_integral_sem_margem.png', img_integral_sem_margem)
       
-	if verifica_igual(blur, img_ingenuo):
+	if verifica_igual(blur_sem_margem, img_ingenuo_sem_margem):
 		print("Algoritmo ingênuo corretamente implementado")
 	else:
 		print("Algoritmo ingênuo NÃO corretamente implementado")
-	if verifica_igual(blur, img_separavel):
+	if verifica_igual(blur_sem_margem, img_separavel_sem_margem):
 		print("Algoritmo separavel corretamente implementado")
 	else:
 		print("Algoritmo separavel NÃO corretamente implementado")
-	if verifica_igual(blur, img_integral):
+	if verifica_igual(blur_sem_margem, img_integral_sem_margem):
 		print("Algoritmo integral corretamente implementado")
 	else: 
 		print("Algoritmo integral NÃO corretamente implementado")
