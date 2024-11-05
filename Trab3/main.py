@@ -44,29 +44,23 @@ def main ():
 				for i in range(0,3):
 					img_bright_pass[x][y][i] = 0.0
 					
-					
-	cv2.imshow("a", img_bright_pass)
+	cv2.imshow("Ori", img)				
+	cv2.imshow("BP", img_bright_pass)
+	sigma = 2
+	gaussian_bloom_mask = cv2.GaussianBlur(img_bright_pass, (0,0), sigma)
+	
+	for i in range(2, 5):
+		name = "i" + str(i)
+		gaussian_bloom_mask = gaussian_bloom_mask + cv2.GaussianBlur(img_bright_pass, (0,0), sigma)
+		sigma = sigma*2
+	
+	cv2.imshow("Bloom Gauss Mask", gaussian_bloom_mask)
+	img_gaussian_bloom = img*0.9 + gaussian_bloom_mask*0.1
+	cv2.imshow("Bloom Gauss", img_gaussian_bloom)
+	
 	cv2.waitKey()
 	exit()
 	
-	
-"""
-	blur = cv2.blur(img,(JANELA,JANELA))
-	blur_sem_margem = blur[MARGEM:-MARGEM, MARGEM:-MARGEM, :]
-	blur = (blur*255).astype(np.uint8)
-	blur_sem_margem = (blur_sem_margem*255).astype(np.uint8)
-	cv2.imwrite ('04 - blur.png', blur)
-	cv2.imwrite ('14 - blur_sem_margem.png', blur_sem_margem)
-    
-	cv2.imwrite ('01 - ingenuo.png', img_ingenuo)
-	cv2.imwrite ('02 - separavel.png', img_separavel)
-	cv2.imwrite ('03 - integral.png', img_integral)
-
-	cv2.imwrite ('11 - img_ingenuo_sem_margem.png', img_ingenuo_sem_margem)
-	cv2.imwrite ('12 - img_separavel_sem_margem.png', img_separavel_sem_margem)
-	cv2.imwrite ('13 - img_integral_sem_margem.png', img_integral_sem_margem)	"""	      
-
-#	exit()
 
 
 if __name__ == '__main__':
