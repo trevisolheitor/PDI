@@ -1,7 +1,7 @@
 #===============================================================================
 # Exemplo: implementação do efeito bloom
 #-------------------------------------------------------------------------------
-# Alunos: Guilherme Koller e Heitor Derder Trevisol
+# Alunos: Guilherme Correa Koller e Heitor Derder Trevisol
 # Universidade Tecnológica Federal do Paraná
 #===============================================================================
 
@@ -49,7 +49,7 @@ def main ():
 	sigma = 2
 	gaussian_bloom_mask = cv2.GaussianBlur(img_bright_pass, (0,0), sigma)
 	
-	for i in range(2, 5):
+	for i in range(2, 6):
 		name = "i" + str(i)
 		gaussian_bloom_mask = gaussian_bloom_mask + cv2.GaussianBlur(img_bright_pass, (0,0), sigma)
 		sigma = sigma*2
@@ -58,10 +58,26 @@ def main ():
 	img_gaussian_bloom = img*0.9 + gaussian_bloom_mask*0.1
 	cv2.imshow("Bloom Gauss", img_gaussian_bloom)
  
-	kernel_size = 30
-	img_box_blur_mask = cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	kernel_size = 15
+	img_blurred_box = cv2.blur(img_bright_pass, (kernel_size, kernel_size))
 	for i in range(2,5):
-		img_box_blur_mask = img_box_blur_mask + cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+		img_blurred_box = img_blurred_box + cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	
+	img_box_blur_mask = img_blurred_box.copy()
+	
+	kernel_size = 19
+	img_blurred_box = cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	for i in range(2,4):
+		img_blurred_box = img_blurred_box + cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	
+	img_box_blur_mask = img_box_blur_mask + img_blurred_box
+	
+	kernel_size = 23
+	img_blurred_box = cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	for i in range(2,3):
+		img_blurred_box = img_blurred_box + cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	
+	img_box_blur_mask = img_box_blur_mask + img_blurred_box
 	
 	img_bloom = img*0.9 + img_box_blur_mask*0.1
 	
