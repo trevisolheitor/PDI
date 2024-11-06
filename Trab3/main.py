@@ -23,7 +23,7 @@ THRESHOLD = 0.68
 
 def main ():
 
-    # Abre a imagem em escala de cinza.
+    # Abre a imagem
 	img = cv2.imread (INPUT_IMAGE, cv2.IMREAD_COLOR)
 	if img is None:
 		print ('Erro abrindo a imagem.\n')
@@ -57,6 +57,16 @@ def main ():
 	cv2.imshow("Bloom Gauss Mask", gaussian_bloom_mask)
 	img_gaussian_bloom = img*0.9 + gaussian_bloom_mask*0.1
 	cv2.imshow("Bloom Gauss", img_gaussian_bloom)
+ 
+	kernel_size = 30
+	img_box_blur_mask = cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	for i in range(2,5):
+		img_box_blur_mask = img_box_blur_mask + cv2.blur(img_bright_pass, (kernel_size, kernel_size))
+	
+	img_bloom = img*0.9 + img_box_blur_mask*0.1
+	
+	cv2.imshow("Bloom Box Mask", img_box_blur_mask)
+	cv2.imshow("Bloom Box Blur", img_bloom)
 	
 	cv2.waitKey()
 	exit()
