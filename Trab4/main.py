@@ -96,9 +96,12 @@ def riceEstimator (labels):
     	arg.append(x['n_pixels'])
     arg = sorted(arg)
     median = np.median(arg)
+    sigma = np.std(arg)
+    if sigma > median/2:
+    	median = median - sigma*0.2
     for x in labels:
     	if x['n_pixels'] > median:
-    		riceCounter = riceCounter + round(x['n_pixels']/median))
+    		riceCounter = riceCounter + round(x['n_pixels']/median)
     	else:
     		riceCounter = riceCounter + 1
     
