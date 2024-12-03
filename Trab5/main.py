@@ -87,18 +87,35 @@ def greenes(img): #calcula a verdicidade de cada pixel
     # cv2.destroyAllWindows()
     return res
 
-
+def verdisse(img):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(hsv)
+    h = h.astype(float)
+    for y, valueY in enumerate(h):
+        for x, valueX in enumerate(valueY):
+            if valueX in range(50, 70): #range de verde
+                h[y][x] = (valueX - 60) / 20.0
+            else:
+                h[y][x] = 1
+    kernel = np.array([[0, 1, 0], 
+                       [1, 1, 1], 
+                       [0, 1, 0]], dtype=np.uint8)
+    h = cv2.dilate(h, kernel, iterations=1) # para tentar tirar ruido
+    cv2.imshow("verdisse", h)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
 
 
 def main():
     images = open_all_images(INPUT_FOLDER)
     for img, filename in images:
         expected = filename.split('.')[0]
-        simples = greenes(img)
-        cv2.imwrite("simples/simples"+filename, simples)
-        fundo_verde, back = so_fundo(img)
-        grad = gradinete(fundo_verde)
-        cv2.imwrite("gradiente/gradiente"+filename, grad)
+        verdisse(img)
+        # simples = greenes(img)
+        # cv2.imwrite("simples/simples"+filename, simples)
+        # fundo_verde, back = so_fundo(img)
+        # grad = gradinete(fundo_verde)
+        # cv2.imwrite("gradiente/gradiente"+filename, grad)
         # mist = mistura(simples, back, grad)
         # cv2.imwrite("mistura/mistura"+filename, mist)
     
