@@ -59,18 +59,15 @@ def gradiente(img):
     #cv2.destroyAllWindows()
 
 
-def mistura(img, back, grad):
+def mistura(img, back, index):
     img_out = img.copy()    
 #    grad = grad/255.0
-
+#	Tentativa de remover o verde, não fico legal, talvez não seja isso o que deve ser feito
 #    img[:,:,1] = np.where(grad==0, img[:,:,1], 0)
-    cv2.imshow("add", img)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
     for iy, y in enumerate(img):
         for ix, x in enumerate(y):
             for ic, c in enumerate(x):            
-                img_out[iy][ix][ic] = (img[iy][ix][ic]*(1-grad[iy][ix])) + back[iy][ix][ic]*(grad[iy][ix])
+                img_out[iy][ix][ic] = (img[iy][ix][ic]*(1-index[iy][ix])) + back[iy][ix][ic]*(index[iy][ix])
     
 #    dst = cv2.addWeighted(img, (1.0-grad), back, grad, 0.0)
     cv2.imshow("add", img_out)
@@ -126,9 +123,8 @@ def green_index_mask(img):
     mask_l[L_ramp_down] = (lum_ramp_upper_bound - L[L_ramp_down])/(lum_ramp_upper_bound - lum_peak_upper_bound)    
 #===============================================================================    
     mask = mask_h*mask_l*mask_s
-    #mask = 1 - mask
-    
-    #mask = cv2.resize(mask, (int(mask.shape[1]*0.7), int(mask.shape[0]*0.7))) 
+
+#    mask = cv2.resize(mask, (int(mask.shape[1]*0.7), int(mask.shape[0]*0.7))) 
     cv2.imshow("green_index", mask)
     cv2.waitKey()
     cv2.destroyAllWindows()   
@@ -154,23 +150,18 @@ def greenes(img): #calcula a verdicidade de cada pixel
     # cv2.destroyAllWindows()
     return res
 
-def verdisse(img):
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
-    h, s, v = cv2.split(hsv)
-    h = h.astype(float)
-    for y, valueY in enumerate(h):
-        for x, valueX in enumerate(valueY):
-            if valueX in range(50, 70): #range de verde
-                h[y][x] = (valueX - 60) / 20.0
-            else:
-                h[y][x] = 1
-    kernel = np.array([[0, 1, 0], 
+def verdisse(img, index):
+    kernel = np.array([[1, 1, 1], 
                        [1, 1, 1], 
-                       [0, 1, 0]], dtype=np.uint8)
-    h = cv2.dilate(h, kernel, iterations=1) # para tentar tirar ruido
-    #cv2.imshow("verdisse", h)
-    #cv2.waitKey()
-    #cv2.destroyAllWindows()
+                       [1, 1, 1]], dtype=np.uint8)
+    h = cv2.erode(index, kernel, iterations=1) # para tentar tirar ruido
+    h = index - h
+    spill = h > 0
+    img[spill, 1] = (img[spill,1]*0.5).astype(np.uint8)
+    cv2.imshow("verdisse", img)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+    return img
 
 
 def main():
@@ -178,7 +169,7 @@ def main():
     for img, filename in images:
         index = green_index_mask(img)
         #expected = filename.split('.')[0]
-        #verdisse(img)
+        #img = verdisse(img, index)
         #simples = greenes(img)
         # cv2.imwrite("simples/simples"+filename, simples)
         fundo_verde, back = so_fundo(img)
