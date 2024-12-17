@@ -60,19 +60,23 @@ def gradiente(img):
 
 
 def mistura(img, back, index):
-    img_out = img.copy()    
+    img_out = img.copy() 
+    img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2HSV)
+    back = cv2.cvtColor(back, cv2.COLOR_BGR2HSV)
+   
 #    grad = grad/255.0
 #	Tentativa de remover o verde, não fico legal, talvez não seja isso o que deve ser feito
 #    img[:,:,1] = np.where(grad==0, img[:,:,1], 0)
     for iy, y in enumerate(img):
         for ix, x in enumerate(y):
-            for ic, c in enumerate(x):            
-                img_out[iy][ix][ic] = (img[iy][ix][ic]*(1-index[iy][ix])) + back[iy][ix][ic]*(index[iy][ix])
+            img_out[iy][ix][0] = (img_out[iy][ix][0]*(1-index[iy][ix])) + back[iy][ix][0]*(index[iy][ix])
     
 #    dst = cv2.addWeighted(img, (1.0-grad), back, grad, 0.0)
-    cv2.imshow("add", img_out)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+    img_out = cv2.cvtColor(img_out, cv2.COLOR_HSV2BGR)
+
+    # cv2.imshow("add", img_out)
+    # cv2.waitKey()
+    # cv2.destroyAllWindows()
     return img_out
 
 def green_index_mask(img):
@@ -85,10 +89,10 @@ def green_index_mask(img):
     mask_s = np.zeros_like(S, dtype=np.float32)
 #===============================================================================            
     peak_green = 60
-    peak_lower_bound = peak_green - 10
-    peak_upper_bound = peak_green + 10
-    ramp_lower_bound = peak_green - 20
-    ramp_upper_bound = peak_green + 20   
+    peak_lower_bound = peak_green - 30
+    peak_upper_bound = peak_green + 30
+    ramp_lower_bound = peak_green - 40
+    ramp_upper_bound = peak_green + 40   
     
     H_ramp_up = (H >= ramp_lower_bound) & (H < peak_lower_bound)
     mask_h[H_ramp_up] = (H[H_ramp_up] - ramp_lower_bound)/(peak_lower_bound - ramp_lower_bound)
@@ -122,12 +126,12 @@ def green_index_mask(img):
     L_ramp_down = (L > lum_peak_upper_bound) & (L <= lum_ramp_upper_bound)
     mask_l[L_ramp_down] = (lum_ramp_upper_bound - L[L_ramp_down])/(lum_ramp_upper_bound - lum_peak_upper_bound)    
 #===============================================================================    
-    mask = mask_h*mask_l*mask_s
+    mask = mask_h#*mask_l*mask_s
 
 #    mask = cv2.resize(mask, (int(mask.shape[1]*0.7), int(mask.shape[0]*0.7))) 
-    cv2.imshow("green_index", mask)
-    cv2.waitKey()
-    cv2.destroyAllWindows()   
+    # cv2.imshow("green_index", mask)
+    # cv2.waitKey()
+    # cv2.destroyAllWindows()   
     
     return mask         	
     
@@ -177,7 +181,7 @@ def main():
         # cv2.imwrite("gradiente/gradiente"+filename, grad)
         #mist = mistura(simples, back, grad)
         mist = mistura(img, back, index)
-        # cv2.imwrite("mistura/mistura"+filename, mist)
+        cv2.imwrite("mistura/mistura"+filename, mist)
     
     
 
