@@ -39,15 +39,15 @@ def fundo(img):
 
 def mistura(img, back, index):
     img_out = img.copy() 
-    img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2HSV)
-    back = cv2.cvtColor(back, cv2.COLOR_BGR2HSV)
+    img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2HLS)
+    back = cv2.cvtColor(back, cv2.COLOR_BGR2HLS)
    
     for iy, y in enumerate(img):
         for ix, x in enumerate(y):
             if index[iy][ix] != 0:
                 img_out[iy][ix][0] = (img_out[iy][ix][0]*(1-(index[iy][ix]))) + back[iy][ix][0]*(index[iy][ix])
     
-    img_out = cv2.cvtColor(img_out, cv2.COLOR_HSV2BGR)
+    img_out = cv2.cvtColor(img_out, cv2.COLOR_HLS2BGR)
     return img_out
 
 def green_index_mask(img):
@@ -73,9 +73,9 @@ def green_index_mask(img):
 #===============================================================================       
 
     #mask = cv2.resize(mask_h, (int(mask_h.shape[1]*0.7), int(mask_h.shape[0]*0.7))) 
-    # cv2.imshow("green_index", mask)
-    # cv2.waitKey()
-    # cv2.destroyAllWindows()   
+    #cv2.imshow("green_index", mask)
+    #cv2.waitKey()
+    #cv2.destroyAllWindows()   
     
     return mask_h      	
 
@@ -83,9 +83,9 @@ def main():
     images = open_all_images(INPUT_FOLDER)
     for img, filename in images:
         index = green_index_mask(img)
-        back = fundo(img)
-        mist = mistura(img, back, index)
-        cv2.imwrite("mistura/mistura"+filename, mist)
+       # back = fundo(img)
+        #mist = mistura(img, back, index)
+        #cv2.imwrite("mistura/mistura"+filename, mist)
 
 if __name__ == "__main__":
     main()
