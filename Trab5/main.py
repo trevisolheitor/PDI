@@ -83,9 +83,9 @@ def main():
     images = open_all_images(INPUT_FOLDER)
     for img, filename in images:
         index = green_index_mask(img)
-       # back = fundo(img)
-        #mist = mistura(img, back, index)
-        #cv2.imwrite("mistura/mistura"+filename, mist)
+        back = fundo(img)
+        mist = mistura(img, back, index)
+        cv2.imwrite("mistura/mistura"+filename, mist)
 
 if __name__ == "__main__":
     main()
